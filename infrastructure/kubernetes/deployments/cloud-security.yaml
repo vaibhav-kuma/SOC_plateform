@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-security
+  namespace: soc-platform
+  labels:
+    app: cloud-security
+    module: cloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloud-security
+  template:
+    metadata:
+      labels:
+        app: cloud-security
+    spec:
+      containers:
+      - name: cloud-security
+        image: socplatform/cloud-security:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8011
+        envFrom:
+        - configMapRef:
+            name: soc-config
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: soc-secrets
+              key: database-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8011
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8011
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-security
+  namespace: soc-platform
+spec:
+  selector:
+    app: cloud-security
+  ports:
+  - port: 8011
+    targetPort: 8011
+  type: ClusterIP

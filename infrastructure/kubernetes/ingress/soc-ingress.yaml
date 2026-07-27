@@ -1,0 +1,74 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: soc-platform-ingress
+  namespace: soc-platform
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: soc-platform-auth-headers@kubernetescrd
+spec:
+  tls:
+  - hosts:
+    - soc.example.com
+    secretName: soc-tls
+  rules:
+  - host: soc.example.com
+    http:
+      paths:
+      - path: /api/v1/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: 8001
+      - path: /api/v1/assets
+        pathType: Prefix
+        backend:
+          service:
+            name: asset-discovery
+            port:
+              number: 8002
+      - path: /api/v1/vulnerabilities
+        pathType: Prefix
+        backend:
+          service:
+            name: vuln-scanner
+            port:
+              number: 8003
+      - path: /api/v1/endpoints
+        pathType: Prefix
+        backend:
+          service:
+            name: edr-service
+            port:
+              number: 8004
+      - path: /api/v1/intel
+        pathType: Prefix
+        backend:
+          service:
+            name: threat-intel
+            port:
+              number: 8006
+      - path: /api/v1/incidents
+        pathType: Prefix
+        backend:
+          service:
+            name: incident-response
+            port:
+              number: 8008
+      - path: /api/v1/copilot
+        pathType: Prefix
+        backend:
+          service:
+            name: ai-copilot
+            port:
+              number: 8013
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

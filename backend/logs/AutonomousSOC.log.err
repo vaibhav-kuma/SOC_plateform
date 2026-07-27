@@ -1,0 +1,14 @@
+INFO:     Will watch for changes in these directories: ['E:\\You_tube_notes\\vi\\ss\\Talent\\backend\\services\\autonomous_soc']
+INFO:     Uvicorn running on http://0.0.0.0:8015 (Press CTRL+C to quit)
+INFO:     Started reloader process [20764] using WatchFiles
+INFO:     Started server process [22088]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [22088]
+INFO:     Started server process [25912]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

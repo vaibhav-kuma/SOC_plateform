@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hunting-service
+  namespace: soc-platform
+  labels:
+    app: hunting-service
+    module: hunting
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hunting-service
+  template:
+    metadata:
+      labels:
+        app: hunting-service
+    spec:
+      containers:
+      - name: hunting-service
+        image: socplatform/hunting-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8012
+        envFrom:
+        - configMapRef:
+            name: soc-config
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: soc-secrets
+              key: database-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8012
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8012
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hunting-service
+  namespace: soc-platform
+spec:
+  selector:
+    app: hunting-service
+  ports:
+  - port: 8012
+    targetPort: 8012
+  type: ClusterIP

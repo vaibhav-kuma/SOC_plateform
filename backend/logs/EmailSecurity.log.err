@@ -1,0 +1,14 @@
+INFO:     Will watch for changes in these directories: ['E:\\You_tube_notes\\vi\\ss\\Talent\\backend\\services\\email_security']
+INFO:     Uvicorn running on http://0.0.0.0:8014 (Press CTRL+C to quit)
+INFO:     Started reloader process [18648] using WatchFiles
+INFO:     Started server process [13420]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [13420]
+INFO:     Started server process [16908]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.

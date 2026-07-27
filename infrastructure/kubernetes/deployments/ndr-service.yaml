@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ndr-service
+  namespace: soc-platform
+  labels:
+    app: ndr-service
+    module: ndr
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ndr-service
+  template:
+    metadata:
+      labels:
+        app: ndr-service
+    spec:
+      containers:
+      - name: ndr-service
+        image: socplatform/ndr-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8008
+        envFrom:
+        - configMapRef:
+            name: soc-config
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: soc-secrets
+              key: database-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8008
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8008
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ndr-service
+  namespace: soc-platform
+spec:
+  selector:
+    app: ndr-service
+  ports:
+  - port: 8008
+    targetPort: 8008
+  type: ClusterIP

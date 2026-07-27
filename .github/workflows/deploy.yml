@@ -1,0 +1,44 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["SOC Platform CI"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v4
+
+    - name: Set up Kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f infrastructure/kubernetes/namespaces/
+        kubectl apply -f infrastructure/kubernetes/configmaps/
+        kubectl apply -f infrastructure/kubernetes/secrets/
+        kubectl apply -f infrastructure/kubernetes/deployments/
+        kubectl apply -f infrastructure/kubernetes/services/
+        kubectl apply -f infrastructure/kubernetes/hpa/
+        kubectl apply -f infrastructure/kubernetes/ingress/
+
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/auth-service -n soc-platform
+        kubectl rollout status deployment/asset-discovery -n soc-platform
+        kubectl rollout status deployment/ai-copilot -n soc-platform
+
+    - name: Notify
+      run: |
+        echo "Deployment to production completed successfully"

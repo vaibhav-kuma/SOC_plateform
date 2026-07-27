@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: asset-discovery
+  namespace: soc-platform
+  labels:
+    app: asset-discovery
+    module: discovery
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: asset-discovery
+  template:
+    metadata:
+      labels:
+        app: asset-discovery
+    spec:
+      containers:
+      - name: asset-discovery
+        image: socplatform/asset-discovery:latest
+        ports:
+        - containerPort: 8002
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: soc-secrets
+              key: database-url
+        - name: ELASTICSEARCH_HOSTS
+          value: '["elasticsearch.soc-data:9200"]'
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka.soc-data:9092"
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: asset-discovery
+  namespace: soc-platform
+spec:
+  selector:
+    app: asset-discovery
+  ports:
+  - port: 8002
+    targetPort: 8002
+  type: ClusterIP

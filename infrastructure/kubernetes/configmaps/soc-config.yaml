@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: soc-config
+  namespace: soc-platform
+data:
+  DATABASE_URL: "postgresql://postgres:postgres@postgres.soc-data:5432/socplatform"
+  REDIS_URL: "redis://redis.soc-data:6379"
+  ELASTICSEARCH_HOSTS: '["elasticsearch.soc-data:9200"]'
+  KAFKA_BOOTSTRAP_SERVERS: "kafka.soc-data:9092"
+  JWT_ALGORITHM: "HS256"
+  JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+  LOG_LEVEL: "INFO"
+  ENV: "production"

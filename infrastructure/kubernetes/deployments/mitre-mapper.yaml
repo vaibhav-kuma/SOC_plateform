@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mitre-mapper
+  namespace: soc-platform
+  labels:
+    app: mitre-mapper
+    module: analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mitre-mapper
+  template:
+    metadata:
+      labels:
+        app: mitre-mapper
+    spec:
+      containers:
+      - name: mitre-mapper
+        image: socplatform/mitre-mapper:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8009
+        envFrom:
+        - configMapRef:
+            name: soc-config
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: soc-secrets
+              key: database-url
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8009
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8009
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mitre-mapper
+  namespace: soc-platform
+spec:
+  selector:
+    app: mitre-mapper
+  ports:
+  - port: 8009
+    targetPort: 8009
+  type: ClusterIP

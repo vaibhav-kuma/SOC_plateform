@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs and temporary files
+*.log
+*.tmp
+*.pid
+
+# Database files
+data/
+*.sqlite
+*.sqlite3
+
+# Python coverage
+.coverage
+htmlcov/
+*.cover
+
+# Package manager
+.ipynb_checkpoints
+pip-log.txt
+
+# Environment-specific directories
+.venv/
+venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Build artifacts
+*.egg
+
+# Python language server
+yarp
+
+# Pycharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Node
+.node
+npm-debug.log*
+
+# Yarn
+yarn-error.log
+
+# Docker
+docker-compose.override.yml
+
+# Temporary files
+*~
+.DS_Store
+
+# Python virtual environments
+.env
+.venv/
+venv/
+ENV/
+env/
